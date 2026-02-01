@@ -5,8 +5,10 @@ class Suit(Enum):
     DIAMONDS = auto()
     CLUBS = auto()
     SPADES = auto()
+    JOKER = auto()
 
 class Rank(Enum):
+    JOKER = 0
     ACE = 1
     TWO = 2
     THREE = 3

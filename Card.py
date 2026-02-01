@@ -6,9 +6,13 @@ class Card:
         self._rank = rank
     
     def __str__(self):
+        if self._suit == Suit.JOKER and self._rank == Rank.JOKER:
+            return "Joker"
         return f"{self._rank.name.title()} of {self._suit.name.title()}"
     
     def __repr__(self):
+        if self._suit == Suit.JOKER and self._rank == Rank.JOKER:
+            return "Joker"
         return f"{self._rank.name.title()} of {self._suit.name.title()}"
 
     def isRed(self):

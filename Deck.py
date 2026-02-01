@@ -6,7 +6,10 @@ class Deck:
         self._deck = []
         for suit in Suit:
             for rank in Rank:
-                self._deck.append(Card(suit, rank))
+                if suit != Suit.JOKER and rank != Rank.JOKER:
+                    self._deck.append(Card(suit, rank))
+        self._deck.append(Card(Suit.JOKER, Rank.JOKER))
+        self._deck.append(Card(Suit.JOKER, Rank.JOKER))
         self.shuffle()
 
     def __str__(self):
@@ -14,3 +17,6 @@ class Deck:
 
     def shuffle(self):
         random.shuffle(self._deck)
+
+    def pop(self) -> Card:
+        return self._deck.pop(0)

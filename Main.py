@@ -1,4 +1,7 @@
 from Deck import Deck
 
 deck = Deck()
-print(deck)
+
+while(True):
+    input()
+    print(deck.pop())
