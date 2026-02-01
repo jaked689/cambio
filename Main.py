@@ -7,8 +7,7 @@ player3 = Player("Player 3")
 player4 = Player("Player 4")
 
 players = [player1, player2, player3, player4]
-indexToStart = 0
 
-game = GameData(players, indexToStart)
+game = GameData(players, player1._id)
 
 print(game)

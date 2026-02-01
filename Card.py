@@ -8,12 +8,21 @@ class Card:
     def __str__(self):
         return self.toString()
     
+    def __int__(self):
+        return self.getPointValue()
+    
+    def __add__(self, other):
+        return int(self) + int(other)
+
+    def __radd__(self, other):
+        return other + int(self)
+
     def __repr__(self):
         return self.toString()
     
     def toString(self):
         if self._suit == Suit.JOKER and self._rank == Rank.JOKER:
-            return "JK"
+            return "JKR"
         if self._suit == Suit.CLUBS:
             suit = "♣"
         elif self._suit == Suit.DIAMONDS:

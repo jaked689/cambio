@@ -22,3 +22,20 @@ class Rank(Enum):
     JACK = 11
     QUEEN = 12
     KING = 13
+
+class Moves(Enum):
+    DRAW = 1
+    DRAW_PLAY_7_8 = 2
+    DRAW_PLAY_9_10 = 3
+    DRAW_PLAY_J = 4
+    DRAW_PLAY_Q = 5
+    DRAW_PLAY_K = 6
+    LOOK_AT_CARD = 7
+    SWAP_CARDS = 8
+
+    TAKE_FROM_DISCARD = 9
+
+    MATCH = 10
+    
+    CAMBIO = 11
+    PASS_CAMBIO = 12
