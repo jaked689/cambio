@@ -24,18 +24,24 @@ class Rank(Enum):
     KING = 13
 
 class Moves(Enum):
-    DRAW = 1
-    DRAW_PLAY_7_8 = 2
-    DRAW_PLAY_9_10 = 3
-    DRAW_PLAY_J = 4
-    DRAW_PLAY_Q = 5
-    DRAW_PLAY_K = 6
-    LOOK_AT_CARD = 7
-    SWAP_CARDS = 8
+    DRAW = 0
+    DRAW_REPLACE = 1
+    DRAW_PLAY = 2
+    LOOK_AT_CARD = 3
+    SWAP_CARDS = 4
 
-    TAKE_FROM_DISCARD = 9
+    TAKE_FROM_DISCARD = 5
 
-    MATCH = 10
+    MATCH = 6
+    MATCH_GIVE_CARD = 7
     
-    CAMBIO = 11
-    PASS_CAMBIO = 12
+    CAMBIO = 8
+    PASS_CAMBIO = 9
+
+class States(Enum):
+    WAITING_FOR_TURN = 0
+    WAITING_FOR_REPLACE_OR_PLAY = 1
+    WAITING_FOR_PICK_CARD_LOOK = 2
+    WAITING_FOR_PICK_CARD_SWAP = 3
+    WAITING_FOR_MATCH_GIVE_CARD = 4
+    WAITING_FOR_CAMBIO = 5
