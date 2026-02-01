@@ -6,14 +6,38 @@ class Card:
         self._rank = rank
     
     def __str__(self):
-        if self._suit == Suit.JOKER and self._rank == Rank.JOKER:
-            return "Joker"
-        return f"{self._rank.name.title()} of {self._suit.name.title()}"
+        return self.toString()
     
     def __repr__(self):
+        return self.toString()
+    
+    def toString(self):
         if self._suit == Suit.JOKER and self._rank == Rank.JOKER:
-            return "Joker"
-        return f"{self._rank.name.title()} of {self._suit.name.title()}"
+            return "JK"
+        if self._suit == Suit.CLUBS:
+            suit = "♣"
+        elif self._suit == Suit.DIAMONDS:
+            suit = "♦"
+        elif self._suit == Suit.HEARTS:
+            suit = "♥"
+        elif self._suit == Suit.SPADES:
+            suit = "♠"
+        else:
+            suit = "?"
+
+        if self._rank == Rank.ACE:
+            rank = "A"
+        elif self._rank == Rank.KING:
+            rank = "K"
+        elif self._rank == Rank.QUEEN:
+            rank = "Q"
+        elif self._rank == Rank.JACK:
+            rank = "J"
+        else:
+            rank = str(self._rank.value)
+
+        return f"{rank}{suit}"
+
 
     def isRed(self):
         if self._suit == Suit.HEARTS or self._suit == Suit.DIAMONDS:

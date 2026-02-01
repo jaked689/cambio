@@ -3,6 +3,12 @@ from Card import Card, Suit, Rank
 
 class Deck:
     def __init__(self):
+        self.populate()
+
+    def __str__(self):
+        return f"{self._deck}"
+    
+    def populate(self):
         self._deck = []
         for suit in Suit:
             for rank in Rank:
@@ -11,9 +17,6 @@ class Deck:
         self._deck.append(Card(Suit.JOKER, Rank.JOKER))
         self._deck.append(Card(Suit.JOKER, Rank.JOKER))
         self.shuffle()
-
-    def __str__(self):
-        return f"{self._deck}"
 
     def shuffle(self):
         random.shuffle(self._deck)
