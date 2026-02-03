@@ -23,9 +23,11 @@ class GameData:
                 self._hands[player].append(self._deck.pop())
 
         self._mostRecentDiscard: Card = self._deck.pop()
+        self._playerWaitingOnId = self._playerToStart._id
+
         self._stateBeforeMatch = None
-        self._playerIndexToSendTo = None
-        self._cardIndexToSendTo = None
+        self._playerIndexToSendToMatch = None
+        self._cardIndexToSendToMatch = None
         
     def __str__(self):
         printStatement = ""
@@ -77,38 +79,86 @@ class GameData:
                 return i
         return -1
 
+    def iterateTurn(self):
+        currentPlayerIndex = self.getHandIndexByPlayerId(self._currentPlayer._id)
+        if self._clockwise:
+            self._currentPlayer = ( self._players[currentPlayerIndex] + 1 ) % self._numPlayers
+        else:
+            self._currentPlayer = ( self._players[currentPlayerIndex] - 1 ) % self._numPlayers
+        self._playerWaitingOnId = self._currentPlayer._id
+        self._state = States.WAITING_FOR_TURN
+
 
     def parsePlay(self, playerId: int, move: Moves, firstCard: int = -1, secondCard: int = -1) -> bool:
+        # Can't do anything unless its your turn!
+        if playerId != self._playerWaitingOnId and move != Moves.MATCH:
+            return False
+        
         # Cannot match if match already occurred
         if move == Moves.MATCH and self._matchPlayed:
             return False
         elif move == Moves.MATCH:
-            # if correct
+            # if correct match
             if self._mostRecentDiscard._rank == self.getCardByPlacement(firstCard)._rank:
                 self._matchPlayed = True
                 cardIndex = self.getCardIndexByPlacement(firstCard)
                 handIndex = self.getHandIndexByPlacement(firstCard)
                 self._mostRecentDiscard = self._hands[handIndex].pop(cardIndex)
+                # if pulled from someone elses hand
                 if self._players[handIndex]._id != playerId:
                     self._stateBeforeMatch = self._state
-                    self._playerIndexToSendTo = handIndex
-                    self._cardIndexToSendTo = cardIndex
+                    self._playerIndexToSendToMatch = handIndex
+                    self._cardIndexToSendToMatch = cardIndex
                     self._state = States.WAITING_FOR_MATCH_GIVE_CARD
+                    self._playerWaitingOnId = playerId
                 return True
             else:
                 index = self.getHandIndexByPlayerId(playerId)
                 self._hands[index].append(self._deck.pop())
             return True
-        elif move == Moves.MATCH_GIVE_CARD:
+        elif self._state == States.WAITING_FOR_MATCH_GIVE_CARD and move == Moves.MATCH_GIVE_CARD:
             playerIndex = self.getHandIndexByPlacement(firstCard)
             cardIndex = self.getCardIndexByPlacement(firstCard)
+            # if trying to give card not in hand
             if playerId != self._players[playerIndex]._id:
                 return False
             cardToSwap = self._hands[playerIndex].pop(cardIndex)
-            self._hands[self._playerIndexToSendTo].insert(self._cardIndexToSendTo, cardToSwap)
+            self._hands[self._playerIndexToSendToMatch].insert(self._cardIndexToSendToMatch, cardToSwap)
+            self._playerWaitingOnId = self._currentPlayer._id
+            self._state = self._stateBeforeMatch
             
             return True
         
-        if self._currentPlayer._id != playerId:
-            return False
+        self._matchPlayed = False
+        if self._state == States.WAITING_FOR_TURN:
+            if move == Moves.DRAW:
+                cardFromTop = self._deck.pop()
+                print(f"{self.getPlayerById(playerId)._username} saw {cardFromTop}")
+                self._state == States.WAITING_FOR_REPLACE_OR_PLAY
+                return True
+            elif move == Moves.TAKE_FROM_DISCARD:
+                playerIndex = self.getHandIndexByPlacement(firstCard)
+                cardIndex = self.getCardIndexByPlacement(firstCard)   
+                if playerId != self._players[playerIndex]._id:
+                    return False
+                self._hands[playerIndex][cardIndex], self._mostRecentDiscard = (
+                    self._mostRecentDiscard,
+                    self._hands[playerIndex][cardIndex],
+                )
+                if not self._cambioCalled:
+                    self._state = States.WAITING_FOR_CAMBIO
+                else: 
+                    self.iterateTurn()
+                return True
+            else: return False
+        elif self._state == States.WAITING_FOR_CAMBIO:
+            if move == Moves.CAMBIO:
+                self._cambioCalled = True
+                self.iterateTurn()
+                return True
+            elif move == Moves.PASS_CAMBIO:
+                self.iterateTurn()
+                return True
+            else: return False
 
+        else: return False

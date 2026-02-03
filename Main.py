@@ -14,7 +14,5 @@ game = GameData(players, player1._id)
 print(game)
 while(True):
     player1input = input("Command here: ")
-    game.parsePlay(player1._id, Moves.MATCH, int(player1input), 0)
-    player1input = input("Command here: ")
-    game.parsePlay(player1._id, Moves.MATCH_GIVE_CARD, int(player1input), 0)
+    game.parsePlay(game._playerWaitingOnId, Moves.TAKE_FROM_DISCARD, int(player1input), 0)
     print(game)
